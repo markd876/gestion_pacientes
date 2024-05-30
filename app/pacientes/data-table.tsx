@@ -25,12 +25,16 @@ import {
 
 import { DataTablePagination } from "./data-tablePagination"
 import React from "react"
+import { Paciente } from "@/app/pacientes/columns"
 import { Input } from "@/components/ui/input"
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
+import Dialog4Component from "@/components/pacientes/Dialog4Component"
+import { UserRoundPlus } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  setData: React.Dispatch<React.SetStateAction<TData[]>>;
+  setData: React.Dispatch<React.SetStateAction<Paciente[]>>;
 }
 
 export function DataTable<TData, TValue>({
@@ -61,17 +65,25 @@ export function DataTable<TData, TValue>({
 
   return (
     <React.Fragment>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filtrar..."
-          type="search"
-          value={(globalFilter as string) ?? ""}
-          onChange={(event) => {
-            setGlobalFilter(String(event.currentTarget.value))
-          }
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Filtrar..."
+            type="search"
+            value={(globalFilter as string) ?? ""}
+            onChange={(event) => {
+              setGlobalFilter(String(event.currentTarget.value))
+            }
+            }
+            className="max-w-sm"
+          />
+        </div>
+        <Dialog>
+        <Dialog4Component setData={setData}/>
+          <DialogTrigger asChild>
+            <Button className="flex items-center"><UserRoundPlus size={24} strokeWidth={1.5} className="mr-2" />  Agregar</Button>
+          </DialogTrigger>
+        </Dialog>
       </div>
       <div className="rounded-md border">
         <Table>

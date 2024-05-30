@@ -29,6 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface Dialog3ComponentProps {
     paciente: Paciente;
+    isActive: boolean;
 }
 interface Tratamiento{
     nombre: String;
@@ -42,24 +43,31 @@ interface Compras {
     tratamiento: Tratamiento;
 }
 
-export default function Dialog3Component({ paciente }: Dialog3ComponentProps) {
+export default function Dialog3Component({ paciente, isActive }: Dialog3ComponentProps) {
 
 
     const [data, setData] = useState<Compras[]>([])
     const getData = async () => {
         const supabase = createClient()
-        const { data: compras, error } = await supabase.from('compras').select('*,tratamiento(nombre)').eq('paciente_id', paciente.id).order('fecha',{ ascending: true })
+        const { data: compras, error } = await supabase
+        .from('compras')
+        .select('*,tratamiento(nombre)')
+        .eq('paciente_id', paciente.id)
+        .order('fecha',{ ascending: true })
         console.log(compras)
         setData(compras as Compras[])
     }
     useEffect(() => {
-        getData();
-      }, [])
+        if(isActive){
+            getData()
+        }
+        isActive = false
+      }, [isActive,paciente.id])
 
     return (
         <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-                <DialogTitle> Detalle de saldo</DialogTitle>
+                <DialogTitle> Detalle de saldo de {paciente.nombre} {paciente.apellido}</DialogTitle>
                 <DialogDescription>
                     
                 </DialogDescription>

@@ -3,7 +3,6 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal,ArrowUpDown } from "lucide-react"
 import { Row } from '@tanstack/react-table';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 
 
 import { Button } from "@/components/ui/button"
@@ -27,7 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import Dialog1Component from "@/components/pacientes/Dialog1Component";
 import Dialog2Component from "@/components/pacientes/Dialog2Component";
@@ -75,8 +74,18 @@ export const columns= (setData: React.Dispatch<React.SetStateAction<Paciente[]>>
     cell: ({ row }) => {
       const paciente = row.original
       const [dialog, setDialog] = useState<any>()
+      const [dialogKey, setDialogKey] = useState(0)
+      useEffect(()=>{
 
+      },[dialog])
 
+      const openDialog = (dialogType: string) =>{
+        setDialog(null)
+        setTimeout(() => {          
+          setDialog(dialogType)
+        }, 0);
+        
+      } 
 
       return (
         <React.Fragment>
@@ -90,22 +99,19 @@ export const columns= (setData: React.Dispatch<React.SetStateAction<Paciente[]>>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                <DialogTrigger asChild onClick={() => {
-                  setDialog(Dialogs.dialog1)
-
-                }}>
+                <DialogTrigger asChild onClick={() => openDialog(Dialogs.dialog1)}>
                   <DropdownMenuItem>Editar paciente</DropdownMenuItem>
                 </DialogTrigger>
-                <DialogTrigger asChild onClick={()=> setDialog(Dialogs.dialog3)}>
+                <DialogTrigger asChild onClick={() => openDialog(Dialogs.dialog3)}>
                   <DropdownMenuItem>Ver detalle de saldo</DropdownMenuItem>
                 </DialogTrigger>
-                <DialogTrigger asChild onClick={() => setDialog(Dialogs.dialog2)}>
+                <DialogTrigger asChild onClick={() => openDialog(Dialogs.dialog2)}>
                   <DropdownMenuItem className="text-red-600">Eliminar paciente</DropdownMenuItem>
                 </DialogTrigger>
               </DropdownMenuContent>
             </DropdownMenu>
             {
-              dialog === Dialogs.dialog1 ? (<Dialog1Component paciente={paciente} setData={setData} />): dialog === Dialogs.dialog2 ? (<Dialog2Component paciente={paciente} setData={setData}/>) : <Dialog3Component paciente={paciente}/>
+              dialog === Dialogs.dialog1 ? (<Dialog1Component paciente={paciente} setData={setData} />): dialog === Dialogs.dialog2 ? (<Dialog2Component paciente={paciente} setData={setData}/>) : <Dialog3Component paciente={paciente} isActive={dialog === Dialogs.dialog3}/>
             }
           </Dialog>
         </React.Fragment>
